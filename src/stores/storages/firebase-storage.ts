@@ -1,20 +1,22 @@
 import { StateStorage, createJSONStorage } from "zustand/middleware";
 
-const firebaseUtl = "https://zustand-storage-5a4d4-default-rtdb.firebaseio.com/zustand.json";
+const firebaseUrl = "https://zustand-storage-5a4d4-default-rtdb.firebaseio.com/zustand";
 
 const storageApi: StateStorage = {
     getItem: async function (name: string): Promise<string | null> {
         try {
-            const data = await fetch(`${firebaseUtl}/${name}`).then((res) => res.json());
-            console.log(data);
-            return data;
+            const data = await fetch(`${firebaseUrl}/${name}.json`).then((res) => res.json());
+            return JSON.stringify(data);
         } catch (error) {
-            console.log(error);
-            throw error;
+            throw new Error("No data found");
         }
     },
-    setItem: function (name: string, value: string): void | Promise<void> {
-        sessionStorage.setItem(name, value);
+    setItem: async function (name: string, value: string): Promise<void> {
+        await fetch(`${firebaseUrl}/${name}.json`, {
+            method: "PUT",
+            body: value,
+        }).then((res) => res.json());
+        return;
     },
     removeItem: function (name: string): void | Promise<void> {
         sessionStorage.removeItem(name);
