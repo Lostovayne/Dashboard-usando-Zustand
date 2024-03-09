@@ -9,14 +9,14 @@ export const WeddingInvitationPage = () => {
       <p>Zustand segmentado en slices</p>
       <hr />
 
-      <WhiteCard className="flex items-center justify-center p-12">
+      <WhiteCard className="flex justify-center items-center p-12">
         <div className="mx-auto w-full max-w-[550px]">
           <form>
-            <div className="-mx-3 flex flex-wrap">
-              <div className="w-full px-3 sm:w-1/2">
+            <div className="flex flex-wrap -mx-3">
+              <div className="px-3 w-full sm:w-1/2">
                 <div className="mb-5">
                   <label
-                    className="mb-3 block text-base font-medium text-[#07074D]"
+                    className="block mb-3 font-medium text-[#07074D] text-base"
                   >
                     Primer Nombre
                   </label>
@@ -28,10 +28,10 @@ export const WeddingInvitationPage = () => {
                   />
                 </div>
               </div>
-              <div className="w-full px-3 sm:w-1/2">
+              <div className="px-3 w-full sm:w-1/2">
                 <div className="mb-5">
                   <label
-                    className="mb-3 block text-base font-medium text-[#07074D]"
+                    className="block mb-3 font-medium text-[#07074D] text-base"
                   >
                     Apellido
                   </label>
@@ -46,7 +46,7 @@ export const WeddingInvitationPage = () => {
             </div>
             <div className="mb-5">
               <label
-                className="mb-3 block text-base font-medium text-[#07074D]"
+                className="block mb-3 font-medium text-[#07074D] text-base"
               >
                 ¿Cuántos invitados traerá?
               </label>
@@ -56,15 +56,15 @@ export const WeddingInvitationPage = () => {
                 id="guestNumber"
                 placeholder="5"
                 min="0"
-                className="w-full appearance-none rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                className="border-[#e0e0e0] focus:border-[#6A64F1] bg-white focus:shadow-md px-6 py-3 border rounded-md w-full font-medium text-[#6B7280] text-base appearance-none outline-none"
               />
             </div>
 
-            <div className="-mx-3 flex flex-wrap">
-              <div className="w-full px-3 sm:w-1/2">
+            <div className="flex flex-wrap -mx-3">
+              <div className="px-3 w-full sm:w-1/2">
                 <div className="mb-5">
                   <label
-                    className="mb-3 block text-base font-medium text-[#07074D]"
+                    className="block mb-3 font-medium text-[#07074D] text-base"
                   >
                     Fecha de evento
                   </label>
@@ -75,10 +75,10 @@ export const WeddingInvitationPage = () => {
                   />
                 </div>
               </div>
-              <div className="w-full px-3 sm:w-1/2">
+              <div className="px-3 w-full sm:w-1/2">
                 <div className="mb-5">
                   <label
-                    className="mb-3 block text-base font-medium text-[#07074D]"
+                    className="block mb-3 font-medium text-[#07074D] text-base"
                   >
                     Hora del evento
                   </label>
@@ -92,7 +92,7 @@ export const WeddingInvitationPage = () => {
             </div>
 
             <div className="mb-5">
-              <label className="mb-3 block text-base font-medium text-[#07074D]">
+              <label className="block mb-3 font-medium text-[#07074D] text-base">
                 ¿Tu también vendrás?
               </label>
               <div className="flex items-center space-x-6">
@@ -101,10 +101,10 @@ export const WeddingInvitationPage = () => {
                     type="radio"
                     name="isComing"
                     id="radioButton1"
-                    className="h-5 w-5"
+                    className="w-5 h-5"
                   />
                   <label
-                    className="pl-3 text-base font-medium text-[#07074D]"
+                    className="pl-3 font-medium text-[#07074D] text-base"
                   >
                     Si
                   </label>
@@ -114,10 +114,10 @@ export const WeddingInvitationPage = () => {
                     type="radio"
                     name="isComing"
                     id="radioButton2"
-                    className="h-5 w-5"
+                    className="w-5 h-5"
                   />
                   <label
-                    className="pl-3 text-base font-medium text-[#07074D]"
+                    className="pl-3 font-medium text-[#07074D] text-base"
                   >
                     No
                   </label>
