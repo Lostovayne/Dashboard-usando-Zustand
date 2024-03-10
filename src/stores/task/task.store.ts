@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { StateCreator, create } from "zustand";
+import { devtools } from "zustand/middleware";
 import { Task, TaskStatus } from "../../interfaces/task.interface";
 
 interface TaskState {
@@ -44,4 +45,4 @@ const storeApi: StateCreator<TaskState> = (set, get) => ({
   },
 });
 
-export const useTaskStore = create<TaskState>()(storeApi);
+export const useTaskStore = create<TaskState>()(devtools(storeApi));
