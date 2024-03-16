@@ -1,5 +1,6 @@
 import { IoReorderTwoOutline } from "react-icons/io5";
 import { Task } from "../../interfaces/task.interface";
+import { useTaskStore } from "../../stores";
 
 interface Props {
   task: Task;
@@ -12,12 +13,19 @@ interface Props {
  * @returns {JSX.Element} The rendered single task.
  */
 const SingleTask = ({ task }: Props): JSX.Element => {
+  const dragginTaskId =  useTaskStore((state) => state.dragginTaskId);
+  const setDragginTaskId =  useTaskStore((state) => state.setDragginTaskId);
+  const removeDraggingTaskId = useTaskStore((state) => state.removeDraggingTaskId);
+
+
   return (
     <div
       draggable
-      onDragStart={() => console.log("onDragStart", task.id)}
-      onDragEnd={() => console.log("onDragEnd")}
-      className="flex justify-between items-center mt-5 p-2"
+      onDragStart={() => setDragginTaskId(task.id)}
+      onDragEnd={() => removeDraggingTaskId()}
+      className={`flex justify-between items-center mt-5 p-2 border border-transparent ${
+        dragginTaskId === task.id ? "border-gray-300 shadow rounded-md" : ""
+      }`}
     >
       <div className="flex justify-center items-center gap-2">
         <p className="font-bold text-base text-navy-700">{task.title}</p>

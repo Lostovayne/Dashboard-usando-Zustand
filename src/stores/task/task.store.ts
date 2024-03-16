@@ -4,12 +4,17 @@ import { devtools } from "zustand/middleware";
 import { Task, TaskStatus } from "../../interfaces/task.interface";
 
 interface TaskState {
+  draggingTaskId?: string;
   tasks: Record<string, Task>;
   //metodos
   getTaskByStatus: (status: TaskStatus) => Task[];
+  setDragginTaskId: (taskId: string) => void;
+  removeDraggingTaskId: () => void;
+  changeTaskStatus: (taskId: string, status: TaskStatus) => void;
 }
 
 const storeApi: StateCreator<TaskState> = (set, get) => ({
+  draggingTaskId: undefined,
   tasks: {
     "ABC-1": {
       id: "ABC-1",
@@ -42,6 +47,33 @@ const storeApi: StateCreator<TaskState> = (set, get) => ({
   getTaskByStatus: (status: TaskStatus): Task[] => {
     const tasks: Task[] = Object.values(get().tasks);
     return tasks.filter((task: Task) => task.status === status);
+  },
+
+  /**
+   * Sets the ID of the task being dragged.
+   * @param taskId The ID of the task being dragged.
+   * @returns void
+   */
+  setDragginTaskId: (taskId: string): void => {
+    if (get().draggingTaskId === taskId) return;
+    set({ draggingTaskId: taskId });
+  },
+  removeDraggingTaskId: () => {
+    set({ draggingTaskId: undefined });
+  },
+
+  /**
+   * Changes the progress of a task.
+   * @param taskId The ID of the task to change the progress of.
+   * @param status The new status of the task.
+   * @returns void
+   */
+  changeTaskStatus: (taskId: string, status: TaskStatus): void => {
+    set((state) => {
+      const tasks = { ...state.tasks };
+      tasks[taskId].status = status;
+      return { tasks };
+    });
   },
 });
 

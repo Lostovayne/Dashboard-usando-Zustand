@@ -1,10 +1,8 @@
-import {
-  IoCheckmarkCircleOutline,
-  IoEllipsisHorizontalOutline,
-  IoReorderTwoOutline,
-} from "react-icons/io5";
+import { IoCheckmarkCircleOutline, IoEllipsisHorizontalOutline } from "react-icons/io5";
 import { Task, TaskStatus } from "../../interfaces/task.interface";
 import SingleTask from "./SingleTask";
+import { useTaskStore } from "../../stores";
+import { useState } from "react";
 
 interface Props {
   title: string;
@@ -12,9 +10,41 @@ interface Props {
   value: TaskStatus;
 }
 
-export const JiraTasks = ({ title , value, tasks  }: Props) => {
+export const JiraTasks = ({ title, value, tasks }: Props) => {
+  // state de zustand
+  const isDragging = useTaskStore((state) => !!state.draggingTaskId);
+  const draggingTaskId = useTaskStore((state) => state.draggingTaskId);
+  const changeTaskStatus = useTaskStore((state) => state.changeTaskStatus);
+  const [onDragOver, setOnDragOver] = useState(false);
+
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setOnDragOver(true);
+  };
+
+  const handleDragLeave = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setOnDragOver(false);
+  };
+
+  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setOnDragOver(false);
+
+    if (draggingTaskId) {
+      changeTaskStatus(draggingTaskId!, value);
+    }
+  };
+
   return (
-    <div className="relative flex flex-col bg-white shadow-3xl shadow-shadow-500 !p-4 3xl:p-![18px] bg-clip-border rounded-[20px] w-full !text-black">
+    <div
+      onDragOver={handleDragOver}
+      onDrop={handleDragLeave}
+      onDragLeave={handleDrop}
+      className={`relative flex flex-col border-4 bg-white shadow-3xl shadow-shadow-500 !p-4 3xl:p-![18px] bg-clip-border border-transparent rounded-[20px] w-full !text-black ${
+        isDragging && "border-dotted border-blue-700"
+      } `}
+    >
       {/* Task Header */}
       <div className="relative flex flex-row justify-between">
         <div className="flex justify-center items-center">
@@ -34,11 +64,9 @@ export const JiraTasks = ({ title , value, tasks  }: Props) => {
 
       {/* Task Items */}
       <div className="w-full h-full">
-          {
-            tasks.map((task) => (
-              <SingleTask key={task.id} task={task} />
-            ))
-          }
+        {tasks.map((task) => (
+          <SingleTask key={task.id} task={task} />
+        ))}
       </div>
     </div>
   );
