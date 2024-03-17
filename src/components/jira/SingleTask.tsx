@@ -13,7 +13,7 @@ interface Props {
  * @returns {JSX.Element} The rendered single task.
  */
 const SingleTask = ({ task }: Props): JSX.Element => {
-  const dragginTaskId =  useTaskStore((state) => state.dragginTaskId);
+  const dragginTaskId =  useTaskStore((state) => state.draggingTaskId);
   const setDragginTaskId =  useTaskStore((state) => state.setDragginTaskId);
   const removeDraggingTaskId = useTaskStore((state) => state.removeDraggingTaskId);
 
