@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { IoAddOutline, IoCheckmarkCircleOutline } from "react-icons/io5";
+import Swal from "sweetalert2";
 import { Task, TaskStatus } from "../../interfaces/task.interface";
 import { cn } from "../../libs/utils";
 import { useTaskStore } from "../../stores";
@@ -16,14 +17,32 @@ export const JiraTasks = ({ title, value, tasks }: Props) => {
   const isDragging = useTaskStore((state) => !!state.draggingTaskId);
   const onTaskDrop = useTaskStore((state) => state.onTaskDrop);
   const removeDraggingTaskId = useTaskStore((state) => state.removeDraggingTaskId);
-  const addTask = useTaskStore((state) => state.addTask)
+  const addTask = useTaskStore((state) => state.addTask);
   const [onDragOver, setOnDragOver] = useState(false);
 
-  const handleAddTask = () => {
-    addTask("Nuevo Titulo",value)
-  }
-
-
+  const handleAddTask = async () => {
+    await Swal.fire({
+      title: "Nueva Tarea",
+      input: "text",
+      inputLabel: "Ingresa el nombre de la nueva tarea",
+      inputPlaceholder: "Tarea 1",
+      inputAttributes: {
+        autocapitalize: "off",
+      },
+      showCancelButton: true,
+      confirmButtonText: "Añadir",
+      showLoaderOnConfirm: true,
+      preConfirm: (taskTitle) => {
+        addTask(taskTitle, value);
+      },
+      inputValidator: (taskTitle) => {
+        if (!taskTitle) {
+          return "Debes Ingresar un Nombre Para la Tarea!";
+        }
+      },
+    });
+    // addTask("Nuevo Titulo", value);
+  };
 
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -34,7 +53,6 @@ export const JiraTasks = ({ title, value, tasks }: Props) => {
     event.preventDefault();
     setOnDragOver(false);
     removeDraggingTaskId();
-
   };
 
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
@@ -42,7 +60,6 @@ export const JiraTasks = ({ title, value, tasks }: Props) => {
     setOnDragOver(false);
     onTaskDrop(value);
   };
-
 
   return (
     <div
