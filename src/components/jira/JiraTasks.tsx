@@ -9,10 +9,10 @@ import SingleTask from "./SingleTask";
 interface Props {
   title: string;
   tasks: Task[];
-  value: TaskStatus;
+  status: TaskStatus;
 }
 
-export const JiraTasks = ({ title, value, tasks }: Props) => {
+export const JiraTasks = ({ title, status, tasks }: Props) => {
   // state de zustand
   const isDragging = useTaskStore((state) => !!state.draggingTaskId);
   const onTaskDrop = useTaskStore((state) => state.onTaskDrop);
@@ -32,11 +32,11 @@ export const JiraTasks = ({ title, value, tasks }: Props) => {
       showCancelButton: true,
       confirmButtonText: "Añadir",
       showLoaderOnConfirm: true,
-      preConfirm: (taskTitle) => {
-        addTask(taskTitle, value);
+      preConfirm: (value) => {
+        addTask(value, status);
       },
-      inputValidator: (taskTitle) => {
-        if (!taskTitle) {
+      inputValidator: (value) => {
+        if (!value) {
           return "Debes Ingresar un Nombre Para la Tarea!";
         }
       },
@@ -58,7 +58,7 @@ export const JiraTasks = ({ title, value, tasks }: Props) => {
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     setOnDragOver(false);
-    onTaskDrop(value);
+    onTaskDrop(status);
   };
 
   return (
