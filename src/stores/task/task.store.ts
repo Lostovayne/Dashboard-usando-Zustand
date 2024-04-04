@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { StateCreator, create } from "zustand";
-import { devtools } from "zustand/middleware";
-import { Task, TaskStatus } from "../../interfaces/task.interface";
 import { v4 as uuidv4 } from "uuid";
+import { StateCreator, create } from "zustand";
+import { devtools, persist } from "zustand/middleware";
+import { Task, TaskStatus } from "../../interfaces/task.interface";
+import { immer } from "zustand/middleware/immer";
 
 interface TaskState {
   draggingTaskId?: string;
@@ -16,37 +17,15 @@ interface TaskState {
   onTaskDrop: (status: TaskStatus) => void;
 }
 
-const storeApi: StateCreator<TaskState> = (set, get) => ({
+const storeApi: StateCreator<TaskState, [["zustand/immer", never]]> = (set, get) => ({
   draggingTaskId: undefined,
   tasks: {
-    "ABC-1": {
-      id: "ABC-1",
-      title: "Task 1",
-      status: "open",
-    },
-    "ABC-2": {
-      id: "ABC-2",
-      title: "Task 2",
-      status: "in-progress",
-    },
-    "ABC-3": {
-      id: "ABC-3",
-      title: "Task 3",
-      status: "open",
-    },
-
-    "ABC-4": {
-      id: "ABC-4",
-      title: "Task 4",
-      status: "open",
-    },
+    "ABC-1": { id: "ABC-1", title: "Task 1", status: "open" },
+    "ABC-2": { id: "ABC-2", title: "Task 2", status: "in-progress" },
+    "ABC-3": { id: "ABC-3", title: "Task 3", status: "open" },
+    "ABC-4": { id: "ABC-4", title: "Task 4", status: "open" },
   },
 
-  /**
-   * Returns an array of tasks with the specified status.
-   * @param status The status to filter tasks by.
-   * @returns An array of tasks with the specified status.
-   */
   getTaskByStatus: (status: TaskStatus): Task[] => {
     const tasks: Task[] = Object.values(get().tasks);
     return tasks.filter((task: Task) => task.status === status);
@@ -59,19 +38,27 @@ const storeApi: StateCreator<TaskState> = (set, get) => ({
       status,
     };
 
-    set((state) => ({
-      tasks: {
-        ...state.tasks,
-        [newTask.id]: newTask,
-      },
-    }));
+    //? usando immer como middleware
+    set((state) => {
+      state.tasks[newTask.id] = newTask;
+    });
+
+    //? Requiere instalación de immer
+    // set(
+    //   produce((state: TaskState) => {
+    //     state.tasks[newTask.id] = newTask;
+    //   })
+    // );
+
+    //? Forma nativa de usar el estado
+    //   set((state) => ({
+    //     tasks: {
+    //       ...state.tasks,
+    //       [newTask.id]: newTask,
+    //     },
+    //   }));
   },
 
-  /**
-   * Sets the ID of the task being dragged.
-   * @param taskId The ID of the task being dragged.
-   * @returns void
-   */
   setDragginTaskId: (taskId: string): void => {
     if (get().draggingTaskId === taskId) return;
     set({ draggingTaskId: taskId });
@@ -80,17 +67,16 @@ const storeApi: StateCreator<TaskState> = (set, get) => ({
     set({ draggingTaskId: undefined });
   },
 
-  /**
-   * Changes the progress of a task.
-   * @param taskId The ID of the task to change the progress of.
-   * @param status The new status of the task.
-   * @returns void
-   */
   changeTaskStatus: (taskId: string, status: TaskStatus): void => {
+    // set((state) => {
+    //   const tasks = { ...state.tasks };
+    //   tasks[taskId].status = status;
+    //   return { tasks };
+    // });
+
+    //? usando immer
     set((state) => {
-      const tasks = { ...state.tasks };
-      tasks[taskId].status = status;
-      return { tasks };
+      state.tasks[taskId].status = status;
     });
   },
 
@@ -102,4 +88,10 @@ const storeApi: StateCreator<TaskState> = (set, get) => ({
   },
 });
 
-export const useTaskStore = create<TaskState>()(devtools(storeApi));
+export const useTaskStore = create<TaskState>()(
+  devtools(
+    persist(immer(storeApi), {
+      name: "task-stor",
+    })
+  )
+);
